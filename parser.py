@@ -17,5 +17,12 @@ TODO:
 
 """
 
-subprocess.run()
+result = str(subprocess.check_output(['ps', '-eo', 'user,size,pmem,pcpu,cmd'])).split(r'\n')
+result = [line.split() for line in result]
+dict_keys = result[0]
+users = [line[0] for line in result[1:-1]]
+user_num = 0
+data = {}
+for user in result[1:-1]:
+    for key in dict_keys:
 
