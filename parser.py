@@ -12,44 +12,49 @@ TODO:
     Больше всего памяти использует: (%имя процесса, первые 20 символов если оно длиннее) 
     Больше всего CPU использует: (%имя процесса, первые 20 символов если оно длиннее)
 Отчёт должен быть сохранён в отдельный txt файл с названием текущей даты и времени проверки. 
-Например, 10-12-2021-12:15-scan.txt
+Например, 10-12-2021-12:15-scan.txt"""
 
-"""
-"""command - ps a -o "user" -o "|%C" -o "|%c" -o "|%z""""
+# ps a -o "user" -o "|%C" -o "|%c" -o "|%z"
 
 TEST_DATA = r"""
-USER      SIZE %CPU CMD \n
-root       696  0.0 /bin/bash \n
-root       320  0.0 /bin/sh \n
-root      3156  0.0 mc \n
-root       696  0.0 bash -rcfile .bashrc \n
-root       760  0.0 nano \n
-root      3220  0.0 python3 \n
-root       588  0.0 su testuser \n
-testuser   696  0.0 bash \n
-testuser  1044  0.0 ps -eo user,size,pcpu,cmd \n
+USER    |%CPU|COMMAND        |   VSZ \n
+root    | 0.0|bash           |  4240 \n
+root    | 0.0|sh             |  2608 \n
+root    | 0.0|mc             | 14832 \n
+root    | 0.0|bash           |  4240 \n
+root    | 0.0|nano           |  3716 \n
+root    | 0.0|python3        | 12988 \n
+root    | 0.0|su             |  4492 \n
+testuser| 0.0|bash           |  4240 \n
+testuser| 0.0|ps             |  5896 \n
 """
 
 #result = str(subprocess.check_output(['ps', '-eo', 'user,size,pmem,pcpu,cmd'])).split(r'\n')
 result = TEST_DATA.split(r'\n')
-result = [line.split() for line in result]
-users = [line[0] for line in result[1:-1]]
-processes_count = len(users)
-users = list(set(users))
-processes = [line[-1] for line in result[1:-1]]
-print(processes)
+processes_count = len(result) - 1
+result = [line.split('|') for line in result]
 data = {}
 resulting_proc_list = []
-for process in range(len(processes)):
-    data['name'] = processes[process]
-    data['size'] = result[process + 1][1]
-    data['cpu'] = result[process + 1][2]
-    resulting_proc_list.append(data)
-
-print(resulting_proc_list)
-
+max_mem_user = {'id': 0, 'value': 0}
+max_cpu_user = max_mem_user.copy()
 mem_used = 0
 cpu_used = 0
+for process in range(result):
+    data['name'] = process[0]
+    data['cpu'] = float(process[1])
+    data['size'] = int(process[2])
+    resulting_proc_list.append(data)
+    if max_mem_user['value'] < data['size']:
+        max_mem_user['value'] = data['size']
+        max_mem_user['id'] = len(resulting_proc_list)
+    if max_cpu_user['value'] < data['cpu']:
+        max_cpu_user['value'] = data['cpu']
+        max_cpu_user['id'] = len(resulting_proc_list)
+    cpu_used += data['cpu']
+    mem_used += data['size']
+
+
+
 most_mem = ''
 most_cpu = ''
 
