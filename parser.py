@@ -79,7 +79,7 @@ most_cpu = ''
 report = 'Отчет о состоянии системы:' + '\n'
 report += "Пользователи системы: '" + " , '".join([user.strip() for user in processes_by_user.keys()]) + "'\n"
 report += 'Процессов запущено: ' + str(processes_count) + '\n'
-processes_by_user = ", ".join([list(processes_by_user.keys())[value] + ': ' +
+processes_by_user = ", ".join([list(processes_by_user.keys())[value].strip() + ': ' +
                                str(processes_by_user[list(processes_by_user.keys())[value]])
                                for value in range(len(processes_by_user))])
 report += "Пользовательских процессов: " + processes_by_user + '\n'
