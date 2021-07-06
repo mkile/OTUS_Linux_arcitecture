@@ -77,7 +77,7 @@ most_mem = ''
 most_cpu = ''
 
 report = 'Отчет о состоянии системы:' + '\n'
-report += "Пользователи системы: '" + " , '".join(processes_by_user.keys()) + "'\n"
+report += "Пользователи системы: '" + " , '".join([user.strip() for user in processes_by_user.keys()]) + "'\n"
 report += 'Процессов запущено: ' + str(processes_count) + '\n'
 processes_by_user = ", ".join([list(processes_by_user.keys())[value] + ': ' +
                                str(processes_by_user[list(processes_by_user.keys())[value]])
