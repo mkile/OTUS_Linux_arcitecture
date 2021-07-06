@@ -1,37 +1,7 @@
 import subprocess
 from datetime import datetime
 
-"""
-TODO:
-Скрипт-парсер системных процессов команды 'ps aux' на subprocess. 
-Парсер должен вывести в стандартный вывод в качестве результата работы:
-    Отчёт о состоянии системы: 
-    !Процессов запущено: 833
-    !Пользовательских процессов: root: 533 user1: 231 ...
-    !Всего памяти используется: 553.3 mb
-    !Всего CPU используется: 33.2% 
-    Больше всего памяти использует: (%имя процесса, первые 20 символов если оно длиннее) 
-    Больше всего CPU использует: (%имя процесса, первые 20 символов если оно длиннее)
-Отчёт должен быть сохранён в отдельный txt файл с названием текущей даты и времени проверки. 
-Например, 10-12-2021-12:15-scan.txt"""
-
-# ps a -o "user" -o "|%C" -o "|%c" -o "|%z"
-
-TEST_DATA = r"""
-USER    |%CPU|COMMAND        |   VSZ \n
-root    | 0.0|bash           |  4240 \n
-root    | 0.3|sh             |  2608 \n
-root    | 0.0|mc             | 14832 \n
-root    | 0.2|bash           |  4240 \n
-root    | 0.0|nano           |  3716 \n
-root    | 0.0|python3        | 12988 \n
-root    | 0.0|su             |  4492 \n
-testuser| 0.1|bash           |  4240 \n
-testuser| 0.5|ps             |  5896 \n
-"""
-
 result = str(subprocess.check_output(['ps', 'a', '-o', 'user', '-o', '|%C', '-o', '|%c', '-o', '|%z'])).split(r'\n')
-# result = TEST_DATA.split(r'\n')
 result = [line.split('|') for line in result]
 users = {user[0]: 0 for user in result[1:-1]}
 data = {}
@@ -84,7 +54,7 @@ processes_by_user = ", ".join([list(processes_by_user.keys())[value].strip() + '
                                for value in range(len(processes_by_user))])
 report += "Пользовательских процессов: " + processes_by_user + '\n'
 
-report += 'Всего памяти используется: ' + (mem_used / 1024).__format__('0.00f') + ' mb\n'
+report += 'Всего памяти используется: ' + (mem_used / 1024).__format__('.1f') + ' mb\n'
 report += 'Использование CPU: ' + str(cpu_used) + '%\n'
 report += 'Больше всего памяти использует: ' + max_mem_user['id'][:20] + '\n'
 report += 'Больше всего CPU использует: ' + str(max_cpu_user['id'])[:20] + '\n'
