@@ -62,3 +62,4 @@ report += 'Больше всего CPU использует: ' + str(max_cpu_use
 print(report)
 with open(datetime.strftime(datetime.now(), '%d-%m-%Y-%H_%M-scan.txt'), 'wb') as file:
     file.write(report.encode('utf-8'))
+
