@@ -56,9 +56,10 @@ report += "Пользовательских процессов: " + processes_by
 
 report += 'Всего памяти используется: ' + (mem_used / 1024).__format__('.1f') + ' mb\n'
 report += 'Использование CPU: ' + str(cpu_used) + '%\n'
-report += 'Больше всего памяти использует: ' + max_mem_user['id'][:20] + '\n'
-report += 'Больше всего CPU использует: ' + str(max_cpu_user['id'])[:20] + '\n'
-
+if max_cpu_user['value'] > 0:
+    report += 'Больше всего CPU использует: ' + str(max_cpu_user['id'])[:20] + '\n'
+else:
+    report += 'У всех процессов одинаковое использование CPU - 0%' + '\n'
 print(report)
 with open(datetime.strftime(datetime.now(), '%d-%m-%Y-%H_%M-scan.txt'), 'wb') as file:
     file.write(report.encode('utf-8'))
